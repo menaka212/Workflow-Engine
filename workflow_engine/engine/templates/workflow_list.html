@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+/* (your CSS unchanged) */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.page-title {
+    font-size: 24px;
+    font-weight: 600;
+}
+.create-btn {
+    background: linear-gradient(45deg, #6366f1, #3b82f6);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+}
+.table-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.custom-table th {
+    background: #f8fafc;
+    padding: 12px;
+}
+.custom-table td {
+    padding: 12px;
+    border-top: 1px solid #e2e8f0;
+}
+.custom-table tr:hover {
+    background: #f1f5f9;
+}
+.status-badge {
+    background: #22c55e;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+.btn-sm {
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: white;
+}
+.btn-builder { background: #f59e0b; color: black; }
+.btn-steps { background: #0ea5e9; }
+.btn-run { background: #22c55e; }
+.btn-graph { background: #6366f1; }
+</style>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="page-header">
+        <h2 class="page-title">📂 Workflows</h2>
+        <a href="/create/" class="create-btn">+ Create Workflow</a>
+    </div>
+
+    <!-- SEARCH RESULT -->
+    {% if request.GET.q %}
+    <p>🔍 Showing results for: "<strong>{{ request.GET.q }}</strong>"</p>
+    {% endif %}
+
+    <!-- TABLE -->
+    <div class="table-card">
+
+        <table class="custom-table">
+
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Version</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for w in workflows %}
+                <tr class="workflow-row">
+
+                    <td><strong>{{ w.name }}</strong></td>
+                    <td>{{ w.version }}</td>
+
+                    <td>
+                        <span class="status-badge">Active</span>
+                    </td>
+
+                    <td>
+                        <div class="action-buttons">
+                            <a href="/builder/{{w.id}}/" class="btn-sm btn-builder">Builder</a>
+                            <a href="/step/{{w.id}}/" class="btn-sm btn-steps">Steps</a>
+                            <a href="/execute/{{w.id}}/" class="btn-sm btn-run">Run</a>
+                            <a href="/graph/{{w.id}}/" class="btn-sm btn-graph">View</a>
+                        </div>
+                    </td>
+
+                </tr>
+
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="text-align:center;">No workflows found</td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

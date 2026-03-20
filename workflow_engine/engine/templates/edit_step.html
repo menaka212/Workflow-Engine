@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+
+/* CENTER CONTAINER */
+.form-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+}
+
+/* CARD */
+.form-card {
+    width: 450px;
+    background: white;
+    padding: 25px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+/* TITLE */
+.form-title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* LABEL */
+label {
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* INPUT */
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    margin-bottom: 15px;
+    transition: 0.2s;
+}
+
+/* FOCUS */
+.form-control:focus {
+    border-color: #6366f1;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(99,102,241,0.2);
+}
+
+/* BUTTON */
+.btn-warning {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: linear-gradient(45deg, #f59e0b, #fbbf24);
+    color: black;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/* HOVER */
+.btn-warning:hover {
+    opacity: 0.9;
+}
+
+/* SMALL TEXT */
+.helper-text {
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 10px;
+}
+
+</style>
+
+<div class="form-center">
+
+<div class="form-card">
+
+<h3 class="form-title">✏ Edit Step</h3>
+
+<form method="post">
+{% csrf_token %}
+
+<label>Step Name</label>
+<input name="name" value="{{step.name}}" class="form-control">
+
+<label>Step Type</label>
+<select name="step_type" class="form-control">
+<option value="task" {% if step.step_type == "task" %}selected{% endif %}>Task</option>
+<option value="approval" {% if step.step_type == "approval" %}selected{% endif %}>Approval</option>
+<option value="notification" {% if step.step_type == "notification" %}selected{% endif %}>Notification</option>
+</select>
+
+<label>Order</label>
+<input name="order" value="{{step.order}}" class="form-control">
+
+<div class="helper-text">
+Lower order executes earlier in workflow.
+</div>
+
+<button class="btn-warning">Update Step</button>
+
+</form>
+
+</div>
+</div>
+
+{% endblock %}

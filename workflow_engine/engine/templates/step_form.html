@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+
+/* PAGE CONTAINER */
+.main-container {
+    max-width: 950px;
+}
+
+/* CARD */
+.card-custom {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+/* TITLE */
+.section-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+/* FORM GRID */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* INPUT */
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+}
+
+/* BUTTON */
+.btn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+/* COLORS */
+.btn-success { background: #22c55e; color: white; }
+.btn-primary { background: #6366f1; color: white; }
+.btn-warning { background: #f59e0b; color: black; }
+.btn-danger { background: #ef4444; color: white; }
+
+/* STEP HEADER */
+.step-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* ACTION BUTTONS */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+/* RULE GRID */
+.rule-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 2fr auto;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* RULE CARD */
+.rule-card {
+    background: #f1f5f9;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* RULE INFO */
+.rule-info {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+}
+
+/* RULE ACTIONS */
+.rule-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* BADGE */
+.badge {
+    background: #e2e8f0;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+/* EMPTY TEXT */
+.text-muted {
+    color: #94a3b8;
+}
+
+</style>
+
+<div class="container main-container">
+
+<!-- ADD STEP FORM -->
+<div class="card-custom">
+    <h3 class="section-title">➕ Add Step</h3>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-grid">
+
+            <div>
+                <label>Name</label>
+                <input name="name" class="form-control" placeholder="Enter step name">
+            </div>
+
+            <div>
+                <label>Step Type</label>
+                <select name="step_type" class="form-control">
+                    <option value="task">Task</option>
+                    <option value="approval">Approval</option>
+                    <option value="notification">Notification</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Order</label>
+                <input name="order" class="form-control" placeholder="1,2,3...">
+            </div>
+
+            <div>
+                <label>Metadata (JSON)</label>
+                <textarea name="metadata" class="form-control" rows="2"></textarea>
+            </div>
+
+        </div>
+
+        <button class="btn btn-success" style="margin-top:15px; width:100%;">Add Step</button>
+    </form>
+</div>
+
+<!-- STEPS + RULES -->
+<h4 class="section-title">⚙ Steps & Rules</h4>
+
+{% for step in workflow.step_set.all %}
+<div class="card-custom">
+
+    <!-- STEP HEADER -->
+    <div class="step-header">
+        <h5>
+            {{ step.name }}
+            <span class="badge">{{ step.step_type }}</span>
+        </h5>
+
+        <div class="action-buttons">
+            <a href="/edit-step/{{step.id}}/" class="btn btn-warning btn-sm">Edit</a>
+            <a href="/delete-step/{{step.id}}/" 
+               class="btn btn-danger btn-sm"
+               onclick="return confirm('Delete this step?');">
+               Delete
+            </a>
+        </div>
+    </div>
+
+    <!-- ADD RULE -->
+    <form method="post" action="/rule/{{step.id}}/">
+        {% csrf_token %}
+
+        <div class="rule-grid">
+
+            <input name="condition" 
+                   class="form-control" 
+                   placeholder="Condition (e.g. amount > 100)">
+
+            <input name="priority" 
+                   class="form-control" 
+                   placeholder="Priority">
+
+            <select name="next_step" class="form-control">
+                {% for s in workflow.step_set.all %}
+                <option value="{{s.id}}">{{s.name}}</option>
+                {% endfor %}
+            </select>
+
+            <button class="btn btn-primary">Add</button>
+
+        </div>
+    </form>
+
+    <!-- RULE LIST -->
+    {% for rule in step.rules.all %}
+    <div class="rule-card">
+
+        <div class="rule-info">
+            <span><strong>Condition:</strong> {{rule.condition}}</span>
+            <span><strong>Next:</strong> {{rule.next_step.name}}</span>
+            <span><strong>Priority:</strong> {{rule.priority}}</span>
+        </div>
+
+        <div class="rule-actions">
+            <a href="/edit-rule/{{rule.id}}/" class="btn btn-warning btn-sm">Edit</a>
+            <a href="/delete-rule/{{rule.id}}/" 
+               class="btn btn-danger btn-sm"
+               onclick="return confirm('Delete this rule?');">
+               Delete
+            </a>
+        </div>
+
+    </div>
+    {% empty %}
+    <p class="text-muted">No rules added yet.</p>
+    {% endfor %}
+
+</div>
+{% endfor %}
+
+</div>
+
+{% endblock %}

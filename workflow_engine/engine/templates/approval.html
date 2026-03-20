@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="card p-4 text-center">
+<h3>Approval Required</h3>
+
+<form method="post">
+{% csrf_token %}
+
+<button name="decision" value="approve" class="btn btn-success m-2">Approve</button>
+<button name="decision" value="reject" class="btn btn-danger m-2">Reject</button>
+
+</form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,285 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>Workflow Engine</title>
+
+<style>
+
+/* ===== RESET ===== */
+* {
+    box-sizing: border-box;
+}
+
+/* ===== BODY ===== */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f6fb;
+    overflow-x: hidden;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: linear-gradient(180deg, #1e293b, #0f172a);
+    padding: 20px;
+    color: white;
+}
+
+.sidebar h4 {
+    margin-bottom: 20px;
+}
+
+.sidebar a {
+    display: block;
+    color: #cbd5f5;
+    padding: 10px 12px;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: 0.2s;
+}
+
+.sidebar a:hover {
+    background: #334155;
+    transform: translateX(5px);
+}
+
+/* ===== HEADER ===== */
+.top-header {
+    position: fixed;
+    top: 0;
+    left: 240px;
+    width: calc(100% - 240px);
+    height: 65px;
+
+    background: linear-gradient(90deg, #4f46e5, #3b82f6);
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1000;
+}
+
+/* LEFT */
+.header-left {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* CENTER */
+.header-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+/* SEARCH WRAPPER */
+.search-wrapper {
+    position: relative;
+    width: 300px;
+}
+
+/* SEARCH ICON */
+.search-wrapper span {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+/* SEARCH BOX */
+.search-box {
+    width: 100%;
+    padding: 8px 15px 8px 35px;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.2);
+    color: white;
+}
+
+.search-box::placeholder {
+    color: #e0e7ff;
+}
+
+/* RIGHT */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* ICON */
+.icon-btn {
+    cursor: pointer;
+}
+
+/* THEME BUTTON */
+.theme-btn {
+    border: none;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* PROFILE */
+.profile {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+/* AVATAR */
+.avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: white;
+    color: #4f46e5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* DROPDOWN */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: white;
+    color: black;
+    border-radius: 10px;
+    padding: 10px;
+    min-width: 140px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 6px;
+    text-decoration: none;
+    color: black;
+}
+
+.dropdown-menu a:hover {
+    background: #f1f5f9;
+}
+
+/* ===== MAIN ===== */
+.main {
+    margin-left: 240px;
+    margin-top: 65px;
+    padding: 30px;
+    width: calc(100% - 240px);
+}
+
+/* ===== LIGHT MODE ===== */
+.light-mode {
+    background: #ffffff;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<nav class="top-header">
+
+    <div class="header-left">⚡ FlowX</div>
+
+    <!-- SEARCH -->
+    <div class="header-center">
+        <form method="get" action="/workflows/">
+    <div class="search-wrapper">
+        <span>🔍</span>
+        <input 
+            type="text" 
+            name="q"
+            value="{{ request.GET.q }}"
+            placeholder="Search workflows..." 
+            class="search-box">
+    </div>
+</form>
+    </div>
+
+    <div class="header-right">
+        <div class="icon-btn" onclick="showAlert()">🔔</div>
+        <button onclick="toggleTheme()" class="theme-btn">🌙</button>
+
+        <div class="profile" onclick="toggleDropdown()">
+            <div class="avatar">AD</div>
+            <span>Admin</span>
+
+            <div id="dropdown" class="dropdown-menu">
+                <a href="#">Profile</a>
+                <a href="#">Logout</a>
+            </div>
+        </div>
+    </div>
+
+</nav>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h4>⚙ Workflow</h4>
+    <a href="/">🏠 Dashboard</a>
+    <a href="/workflows/">📂 Workflows</a>
+</div>
+
+<!-- CONTENT -->
+<div class="main">
+    {% block content %}{% endblock %}
+</div>
+
+<script>
+
+/* THEME */
+function toggleTheme() {
+    document.body.classList.toggle("light-mode");
+}
+
+/* ALERT */
+function showAlert() {
+    alert("No new notifications");
+}
+
+/* DROPDOWN */
+function toggleDropdown() {
+    let menu = document.getElementById("dropdown");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+/* CLOSE DROPDOWN */
+window.addEventListener("click", function(e) {
+    if (!e.target.closest(".profile")) {
+        let menu = document.getElementById("dropdown");
+        if (menu) menu.style.display = "none";
+    }
+});
+
+/* SEARCH (WORKS ONLY ON PAGES WITH workflow-row) */
+
+
+</script>
+
+</body>
+</html>

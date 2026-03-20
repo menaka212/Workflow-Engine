@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+
+/* TITLE */
+.page-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* FLOW */
+.flow-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 15px;
+}
+
+/* STEP BOX */
+.step-box {
+    min-width: 200px;
+    padding: 15px;
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* COLORS */
+.task { background: #3b82f6; }
+.approval { background: #22c55e; }
+.notification { background: #f59e0b; }
+
+/* ARROW */
+.arrow {
+    font-size: 22px;
+    color: #64748b;
+}
+
+/* RULE BOX */
+.rule-box {
+    background: #f1f5f9;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+    text-align: left;
+    color: black;
+}
+
+/* RULE TEXT */
+.rule-item {
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+/* EMPTY */
+.empty-text {
+    color: #94a3b8;
+}
+
+</style>
+
+<h3 class="page-title">📊 Workflow Overview</h3>
+
+<div class="flow-container">
+
+{% for step in steps %}
+
+    <div>
+
+        <!-- STEP -->
+        <div class="step-box {{ step.step_type }}">
+            {{ step.name }}
+            <div style="font-size:12px; margin-top:5px;">
+                {{ step.step_type }}
+            </div>
+        </div>
+
+        <!-- RULES -->
+        <div class="rule-box">
+
+            {% for rule in step.rules.all %}
+                <div class="rule-item">
+                    {{ rule.condition }} → 
+                    <strong>
+                        {% if rule.next_step %}
+                            {{ rule.next_step.name }}
+                        {% else %}
+                            END
+                        {% endif %}
+                    </strong>
+                </div>
+            {% empty %}
+                <div class="rule-item">No rules</div>
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    {% if not forloop.last %}
+        <div class="arrow">➡️</div>
+    {% endif %}
+
+{% empty %}
+<p class="empty-text">No steps available</p>
+{% endfor %}
+
+</div>
+
+{% endblock %}

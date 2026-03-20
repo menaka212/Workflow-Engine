@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+
+/* TITLE */
+.logs-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* TIMELINE */
+.timeline {
+    position: relative;
+    margin-left: 20px;
+    padding-left: 20px;
+    border-left: 3px solid #6366f1;
+}
+
+/* CARD */
+.log-card {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    position: relative;
+}
+
+/* DOT */
+.log-card::before {
+    content: "";
+    position: absolute;
+    left: -30px;
+    top: 20px;
+    width: 12px;
+    height: 12px;
+    background: #6366f1;
+    border-radius: 50%;
+}
+
+/* TITLE */
+.step-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* TYPE */
+.step-type {
+    font-size: 12px;
+    color: #64748b;
+}
+
+/* NEXT */
+.next-step {
+    margin-top: 8px;
+    font-size: 14px;
+}
+
+/* RULES */
+.rule-list {
+    margin-top: 10px;
+    padding-left: 15px;
+}
+
+.rule-item {
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+/* COLORS */
+.true {
+    color: #22c55e;
+    font-weight: 500;
+}
+
+.false {
+    color: #ef4444;
+    font-weight: 500;
+}
+
+/* EMPTY */
+.empty-text {
+    color: #94a3b8;
+    margin-top: 20px;
+}
+
+</style>
+
+<h3 class="logs-title">📊 Execution Logs</h3>
+
+<div class="timeline">
+
+{% if execution.logs %}
+
+    {% for log in execution.logs %}
+
+    <div class="log-card">
+
+        <div class="step-title">
+            {{ log.step_name }}
+            <span class="step-type">({{ log.step_type }})</span>
+        </div>
+
+        {% if log.selected_next_step %}
+        <div class="next-step">
+            ➡ Next Step: <strong>{{ log.selected_next_step }}</strong>
+        </div>
+        {% endif %}
+
+        {% if log.evaluated_rules %}
+        <div class="rule-list">
+
+            {% for r in log.evaluated_rules %}
+            <div class="rule-item">
+                {{ r.rule }} →
+                <span class="{% if r.result %}true{% else %}false{% endif %}">
+                    {{ r.result }}
+                </span>
+            </div>
+            {% endfor %}
+
+        </div>
+        {% endif %}
+
+    </div>
+
+    {% endfor %}
+
+{% else %}
+    <p class="empty-text">No logs available</p>
+{% endif %}
+
+</div>
+
+{% endblock %}

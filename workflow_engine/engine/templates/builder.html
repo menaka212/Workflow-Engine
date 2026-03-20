@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+
+/* PAGE TITLE */
+.page-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* LAYOUT */
+.builder-container {
+    display: flex;
+    gap: 20px;
+}
+
+/* LEFT PANEL */
+.left-panel {
+    width: 25%;
+}
+
+.right-panel {
+    width: 75%;
+}
+
+/* CARD */
+.card-custom {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* DRAG ITEMS */
+.draggable {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: 500;
+    cursor: grab;
+    transition: 0.2s;
+}
+
+/* COLORS */
+.task { background: #3b82f6; color: white; }
+.approval { background: #22c55e; color: white; }
+.notification { background: #f59e0b; color: white; }
+
+/* HOVER */
+.draggable:hover {
+    transform: scale(1.05);
+}
+
+/* CANVAS */
+.canvas-box {
+    height: 400px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+/* STEP ITEM */
+.canvas-box .draggable {
+    margin-bottom: 8px;
+}
+
+/* EMPTY TEXT */
+.empty-text {
+    color: #94a3b8;
+    margin-top: 10px;
+}
+
+/* COUNT */
+.step-count {
+    margin-top: 10px;
+    font-weight: 500;
+}
+
+</style>
+
+<h2 class="page-title">⚙ Workflow Builder</h2>
+
+<div class="builder-container">
+
+    <!-- LEFT -->
+    <div class="left-panel">
+        <div class="card-custom">
+
+            <h5>Drag Steps</h5>
+
+            <div class="draggable task" draggable="true" ondragstart="drag(event)" data-type="task">
+                📌 Task
+            </div>
+
+            <div class="draggable approval" draggable="true" ondragstart="drag(event)" data-type="approval">
+                ✅ Approval
+            </div>
+
+            <div class="draggable notification" draggable="true" ondragstart="drag(event)" data-type="notification">
+                🔔 Notification
+            </div>
+
+        </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right-panel">
+        <div id="canvas" class="card-custom canvas-box"
+             ondrop="drop(event)" ondragover="allowDrop(event)">
+
+            {% for step in steps %}
+                <div class="draggable {{ step.step_type }}">
+                    {{ step.name|upper }}
+                </div>
+            {% endfor %}
+
+            <p class="empty-text">Drop steps here...</p>
+            <div class="step-count">Total Steps: {{ steps|length }}</div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+let stepCount = {{ steps|length|default:0 }} + 1;
+
+// Allow drop
+function allowDrop(ev) {
+    ev.preventDefault();
+}
+
+// Drag
+function drag(ev) {
+    ev.dataTransfer.setData("type", ev.target.dataset.type);
+}
+
+// Drop
+function drop(ev) {
+    ev.preventDefault();
+
+    let type = ev.dataTransfer.getData("type");
+
+    let node = document.createElement("div");
+    node.className = "draggable " + type;
+    node.innerHTML = type.toUpperCase() + " STEP " + stepCount;
+
+    document.getElementById("canvas").appendChild(node);
+
+    // 🔥 SAVE TO BACKEND
+    fetch('/save-step/', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFToken()
+        },
+        body: JSON.stringify({
+            workflow_id: "{{ workflow.id }}",
+            name: type + " Step " + stepCount,
+            type: type,
+            order: stepCount
+        })
+    });
+
+    stepCount++;
+}
+
+// CSRF TOKEN
+function getCSRFToken() {
+    let cookie = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken'));
+
+    return cookie ? cookie.split('=')[1] : '';
+}
+
+</script>
+
+{% endblock %}

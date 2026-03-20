@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+
+/* CENTER CONTAINER */
+.form-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0;
+}
+
+/* CARD */
+.form-card {
+    width: 500px;
+    background: white;
+    padding: 25px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+/* TITLE */
+.form-title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* LABEL */
+label {
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* INPUT */
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    margin-bottom: 15px;
+    transition: 0.2s;
+}
+
+/* INPUT FOCUS */
+.form-control:focus {
+    border-color: #6366f1;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(99,102,241,0.2);
+}
+
+/* BUTTONS */
+.btn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+/* PRIMARY */
+.btn-primary {
+    width: 100%;
+    background: linear-gradient(45deg, #6366f1, #3b82f6);
+    color: white;
+}
+
+/* WARNING */
+.btn-warning {
+    background: #f59e0b;
+    color: black;
+}
+
+/* DANGER */
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+/* HOVER */
+.btn:hover {
+    opacity: 0.9;
+}
+
+/* RULE CARD */
+.rule-card {
+    background: #f1f5f9;
+    padding: 12px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+/* RULE TEXT */
+.rule-text {
+    font-size: 14px;
+}
+
+/* ACTION BUTTONS */
+.rule-actions {
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+}
+
+/* SECTION TITLE */
+.section-title {
+    font-weight: 600;
+    margin-top: 20px;
+}
+
+/* EMPTY */
+.text-muted {
+    color: #94a3b8;
+}
+
+</style>
+
+<div class="form-center">
+
+<div class="form-card">
+
+<h3 class="form-title">➕ Add Rule</h3>
+
+<form method="post">
+{% csrf_token %}
+
+<label>Condition</label>
+<input name="condition" class="form-control" placeholder="e.g. amount > 100">
+
+<label>Priority</label>
+<input name="priority" class="form-control" placeholder="1">
+
+<label>Next Step</label>
+<select name="next_step" class="form-control">
+{% for s in step.workflow.step_set.all %}
+<option value="{{s.id}}">{{s.name}}</option>
+{% endfor %}
+</select>
+
+<button class="btn btn-primary">Add Rule</button>
+
+</form>
+
+<hr>
+
+<h5 class="section-title">📋 Existing Rules</h5>
+
+{% for rule in step.rules.all %}
+<div class="rule-card">
+
+<div class="rule-text">
+<strong>Condition:</strong> {{rule.condition}} <br>
+<strong>Next:</strong> {{rule.next_step.name}} <br>
+<strong>Priority:</strong> {{rule.priority}}
+</div>
+
+<div class="rule-actions">
+
+<a href="/edit-rule/{{rule.id}}/" class="btn btn-warning btn-sm">
+Edit
+</a>
+
+<a href="/delete-rule/{{rule.id}}/" 
+   class="btn btn-danger btn-sm"
+   onclick="return confirm('Are you sure you want to delete this rule?');">
+Delete
+</a>
+
+</div>
+
+</div>
+{% empty %}
+<p class="text-muted">No rules added yet.</p>
+{% endfor %}
+
+</div>
+</div>
+
+{% endblock %}

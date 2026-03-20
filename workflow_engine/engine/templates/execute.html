@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+
+/* CENTER CONTAINER */
+.execute-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+}
+
+/* CARD */
+.execute-card {
+    width: 420px;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+/* TITLE */
+.execute-title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* INPUT */
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    margin-bottom: 12px;
+}
+
+/* BUTTON */
+.btn-success {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: linear-gradient(45deg, #22c55e, #16a34a);
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn-success:hover {
+    opacity: 0.9;
+}
+
+/* LABEL */
+label {
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+}
+
+</style>
+
+<div class="execute-container">
+
+    <div class="execute-card">
+
+        <h3 class="execute-title">🚀 Execute {{ workflow.name }}</h3>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- 🔥 DYNAMIC INPUTS -->
+            {% for key, type in workflow.input_schema.items %}
+
+                <label>{{ key|title }}</label>
+
+                {% if type == "number" %}
+                    <input type="number" 
+                           name="{{key}}" 
+                           placeholder="Enter {{key}}" 
+                           class="form-control">
+                {% elif type == "string" %}
+                    <input type="text" 
+                           name="{{key}}" 
+                           placeholder="Enter {{key}}" 
+                           class="form-control">
+                {% else %}
+                    <input type="text" 
+                           name="{{key}}" 
+                           placeholder="Enter {{key}}" 
+                           class="form-control">
+                {% endif %}
+
+            {% endfor %}
+
+            <button class="btn-success">Start Execution</button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
