@@ -197,6 +197,21 @@ python manage.py runserver
 
 FlowX demonstrates a rule-based workflow engine capable of handling real-world automation scenarios with flexibility and scalability.
 
+Screenshots:
+<img width="1893" height="858" alt="image" src="https://github.com/user-attachments/assets/8f462e52-e095-4369-8efd-7e213d55e1f5" />
+
+<img width="1893" height="858" alt="image" src="https://github.com/user-attachments/assets/8f405514-a1d3-4599-b676-8fd9d63dcd85" />
+
+<img width="1893" height="858" alt="image" src="https://github.com/user-attachments/assets/b87a6f94-617b-4d76-83d3-e1eb4a5dae97" />
+
+<img width="1893" height="858" alt="image" src="https://github.com/user-attachments/assets/95cce9fc-d152-4298-8659-f39419310a68" />
+
+<img width="1893" height="858" alt="image" src="https://github.com/user-attachments/assets/b3a00636-db11-45e9-9a05-c201a5bbd279" />
+
+<img width="1893" height="858" alt="image" src="https://github.com/user-attachments/assets/b293166f-4849-4d0b-84ba-a88e3948353b" />
+
+<img width="1889" height="853" alt="image" src="https://github.com/user-attachments/assets/bb677ff5-ba94-4f56-babf-2101183a9800" />
+
 
 ---
 🎯 Future Enhancements
