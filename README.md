@@ -1,35 +1,3 @@
-# 🚀 FlowX - Workflow Automation Engine
-
-FlowX is a dynamic workflow automation system built using Django. It allows users to create, manage, and execute workflows with conditional logic, approvals, and execution tracking.
-
----
-
-## 🔥 Features
-
-- ✅ Create custom workflows
-- ✅ Add multiple steps (Task / Approval)
-- ✅ Define conditional rules (dynamic decision engine)
-- ✅ Execute workflows with real-time input
-- ✅ Automatic rule evaluation
-- ✅ Approval-based flow pause
-- ✅ Execution logs with timeline view
-- ✅ Admin panel for managing workflows
-- ✅ Search functionality
-
----
-
-## 🧠 How It Works
-
-1. Create a workflow  
-2. Add steps with order  
-3. Define rules between steps  
-4. Set start step  
-5. Execute workflow with input data  
-6. System evaluates rules and moves through steps  
-7. Logs are generated for each execution  
-
----
-
 ## 📂 Project Structure
 # 🚀 FlowX - Workflow Automation Engine
 
